@@ -161,6 +161,7 @@ start: monitors=1 initialPct=100 step=3 osd=True tray=True
 | `test-wheel.ps1` | 端到端自检：注入滚轮手势、读回亮度、截图 |
 | `luxwheel-launch.vbs` | 自动生成的无窗口启动器（自启用）|
 | `diagnostics/` | 排查用探测脚本（DDC 能力、HDR 状态、句柄行为、资源测量等）|
+| `LICENSE` | MIT 许可 |
 
 ## 原理与限制
 
@@ -172,3 +173,7 @@ start: monitors=1 initialPct=100 step=3 osd=True tray=True
 - 笔记本内屏走的是另一套 WMI 接口，本项目只实现 DDC/CI 路径。
 - 常驻一个隐藏的 pwsh 进程与一个托盘图标；鼠标钩子对每个鼠标事件的平均处理耗时为
   **15.6 微秒**（1000Hz 鼠标持续狂甩约合单核 1.5%）。
+
+## 许可
+
+[MIT](LICENSE) —— 随便用、随便改、随便分发、可商用，保留版权声明即可。
