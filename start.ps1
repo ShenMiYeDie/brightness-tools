@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 <#
-    启动屏幕亮度滚轮调节器（后台常驻，无窗口）
+    luxwheel —— 启动（后台常驻、无窗口）
 
     示例：
       pwsh -File start.ps1                    # 默认每格 3%
@@ -21,7 +21,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot 'lib.ps1')
+. (Join-Path $PSScriptRoot 'luxwheel-lib.ps1')
 
 $arguments = Get-DaemonArgumentString -Step $Step -FineStep $FineStep -Min $Min -Max $Max `
     -OsdSeconds $OsdSeconds -NoOsd:$NoOsd -NoTray:$NoTray -NoCtrl:$NoCtrl -NoAlt:$NoAlt
@@ -39,7 +39,7 @@ if ($running -and $Force) {
 }
 
 # 组件编译放在停掉旧实例之后：运行中的进程会锁住 DLL，那时无法替换
-& (Get-Process -Id $PID).Path -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build-dll.ps1') | Out-Null
+& (Get-Process -Id $PID).Path -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'luxwheel-build.ps1') | Out-Null
 
 New-LauncherVbs -Path $VbsPath -DaemonArgs $arguments
 Start-Process -FilePath 'wscript.exe' -ArgumentList "`"$VbsPath`""

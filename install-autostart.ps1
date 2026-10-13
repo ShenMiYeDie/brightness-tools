@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 <#
-    安装开机自启（登录后自动在后台运行）
+    luxwheel —— 安装开机自启（往「启动」文件夹写一个无窗口的 VBS）
 
     示例：
       pwsh -File install-autostart.ps1
@@ -22,7 +22,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot 'lib.ps1')
+. (Join-Path $PSScriptRoot 'luxwheel-lib.ps1')
 
 $arguments = Get-DaemonArgumentString -Step $Step -FineStep $FineStep -Min $Min -Max $Max `
     -OsdSeconds $OsdSeconds -NoOsd:$NoOsd -NoTray:$NoTray -NoCtrl:$NoCtrl -NoAlt:$NoAlt
@@ -41,7 +41,7 @@ if (-not $NoStart) {
 }
 
 # 先把 C# 组件编译好（此时进程已停，DLL 不会被占用），这样登录自启时不必现场编译
-& (Get-Process -Id $PID).Path -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'build-dll.ps1') | Out-Null
+& (Get-Process -Id $PID).Path -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'luxwheel-build.ps1') | Out-Null
 
 if (-not $NoStart) {
     Start-Process -FilePath 'wscript.exe' -ArgumentList "`"$VbsPath`""

@@ -1,12 +1,12 @@
 #Requires -Version 7.0
 <#
-    停止屏幕亮度滚轮调节器
+    luxwheel —— 停止正在运行的实例
 #>
 [CmdletBinding()]
 param()
 
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot 'lib.ps1')
+. (Join-Path $PSScriptRoot 'luxwheel-lib.ps1')
 
 $found = Get-BrightnessDaemon
 if (-not $found) {

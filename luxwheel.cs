@@ -1,3 +1,16 @@
+/*
+    luxwheel 的 C# 组件
+    ==========================================================================
+    由 luxwheel.ps1 预编译为 luxwheel.generated.dll 后加载（编译脚本：
+    luxwheel-build.ps1）。内容包括：DDC/CI 读写与失效自愈、全局鼠标钩子、
+    亮度提示条窗口、托盘菜单。
+
+    关键词 / keywords：monitor brightness, screen brightness, dim screen,
+    mouse wheel, scroll wheel, DDC/CI, DDC-CI, MCCS, VCP 0x10, dxva2,
+    WH_MOUSE_LL, WM_MOUSEWHEEL, external monitor backlight, Windows,
+    屏幕亮度, 显示器亮度, 滚轮调光, 亮度提示条, 托盘
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,7 +19,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
-public class BrightnessWheel
+public class Luxwheel
 {
     // ================= 配置（由 PowerShell 注入） =================
     public static int StepPercent = 3;
@@ -57,7 +70,7 @@ public class BrightnessWheel
     static readonly MonitorEnumProc enumProc = EnumCallback;
     static Mutex singleton;
     // 控制通道：-1 自动（优先传统 API，不可用则退回 VCP 0x10）、0 只用传统、1 只用 VCP
-    // 可用环境变量 BRIGHTNESS_TOOL_VCP_MODE=vcp|legacy 强制，便于在别的机器上排查
+    // 可用环境变量 LUXWHEEL_CHANNEL=vcp|legacy 强制，便于在别的机器上排查
     static int ForceMode = -1;
 
     // ================= Win32 : 鼠标钩子 =================
@@ -645,7 +658,7 @@ public class BrightnessWheel
     static void UiThread()
     {
         bool created;
-        singleton = new Mutex(true, @"Local\BrightnessWheelSingleton", out created);
+        singleton = new Mutex(true, @"Local\LuxwheelSingleton", out created);
         if (!created) return;          // 已经有实例在跑
 
         try { Application.SetHighDpiMode(HighDpiMode.PerMonitorV2); } catch (Exception ex) { Log("dpi: " + ex.Message); }
@@ -653,7 +666,7 @@ public class BrightnessWheel
         Application.ThreadException += delegate (object s, ThreadExceptionEventArgs e) { Log("ui error: " + e.Exception); };
         Application.ApplicationExit += delegate { Cleanup(); };
 
-        string forced = Environment.GetEnvironmentVariable("BRIGHTNESS_TOOL_VCP_MODE");
+        string forced = Environment.GetEnvironmentVariable("LUXWHEEL_CHANNEL");
         if (forced == "vcp") ForceMode = 1;
         else if (forced == "legacy") ForceMode = 0;
 
@@ -672,7 +685,7 @@ public class BrightnessWheel
 
         Thread w = new Thread(WorkerLoop);
         w.IsBackground = true;
-        w.Name = "brightness-writer";
+        w.Name = "luxwheel-writer";
         w.Start();
 
         hookProc = HookCallback;

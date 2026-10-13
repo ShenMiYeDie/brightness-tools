@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 <#
-    命令行直接设置屏幕亮度（不改动后台守护进程的开关状态，仅用于测试/脚本调用）
+    luxwheel —— 命令行直接读写屏幕亮度（独立于守护进程，方便脚本调用/排查）
 
     用法：
       pwsh -File set-brightness.ps1 -Percent 60

@@ -5,7 +5,7 @@ $base = Split-Path $PSScriptRoot -Parent
 
 function Get-Daemon {
     Get-CimInstance Win32_Process -Filter "Name='pwsh.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -match 'brightness-wheel\.ps1' -and $_.CommandLine -match '\s-File\s' } |
+        Where-Object { $_.CommandLine -match 'luxwheel\.ps1' -and $_.CommandLine -match '\s-File\s' } |
         Select-Object -First 1
 }
 
@@ -75,15 +75,15 @@ Stop-Process -Id $idle.Id -Force -ErrorAction SilentlyContinue
 ''
 
 '=== 5. 模拟开机自启的就绪耗时 ==='
-$vbs = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\brightness-wheel.vbs'
+$vbs = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup\luxwheel.vbs'
 "自启文件：$vbs"
 "存在：$(Test-Path $vbs)"
 foreach ($x in (Get-Daemon)) { Stop-Process -Id $x.ProcessId -Force -ErrorAction SilentlyContinue }
 Start-Sleep -Seconds 1
-Remove-Item "$env:TEMP\brightness-wheel.log" -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\luxwheel.log" -ErrorAction SilentlyContinue
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
 Start-Process -FilePath 'wscript.exe' -ArgumentList "`"$vbs`""
-$log = "$env:TEMP\brightness-wheel.log"
+$log = "$env:TEMP\luxwheel.log"
 while ($sw.Elapsed.TotalSeconds -lt 30) {
     if ((Test-Path $log) -and ((Get-Content $log -Raw) -match 'hook installed')) { break }
     Start-Sleep -Milliseconds 100

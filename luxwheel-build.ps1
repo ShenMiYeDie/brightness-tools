@@ -1,14 +1,14 @@
 #Requires -Version 7.0
 <#
-    把 brightness-wheel.cs 预编译成 brightness-wheel.generated.dll
+    把 luxwheel.cs 预编译成 luxwheel.generated.dll
 
     为什么要预编译：在常驻进程里用 Add-Type 现场编译，会把 Roslyn 编译器和
     277 个参考程序集一起装进内存（实测多占约 200MB）。预编译成 DLL 后，
     常驻进程只需要加载 DLL，内存和启动时间都大幅下降。
 
     用法：
-      pwsh -File build-dll.ps1           # 需要时编译
-      pwsh -File build-dll.ps1 -Force    # 强制重新编译
+      pwsh -File luxwheel-build.ps1           # 需要时编译
+      pwsh -File luxwheel-build.ps1 -Force    # 强制重新编译
 #>
 [CmdletBinding()]
 param(
@@ -16,13 +16,13 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot 'lib.ps1')
+. (Join-Path $PSScriptRoot 'luxwheel-lib.ps1')
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$csPath    = Join-Path $PSScriptRoot 'brightness-wheel.cs'
-$dllPath   = Join-Path $PSScriptRoot 'brightness-wheel.generated.dll'
+$csPath    = Join-Path $PSScriptRoot 'luxwheel.cs'
+$dllPath   = Join-Path $PSScriptRoot 'luxwheel.generated.dll'
 $stampPath = "$dllPath.stamp"
 
 if (-not (Test-Path $csPath)) { throw "找不到源码：$csPath" }
@@ -36,7 +36,7 @@ Remove-Item $dllPath, $stampPath -ErrorAction SilentlyContinue
 
 # 先编译到临时文件：正在运行的守护进程会锁住旧 DLL（.NET 把程序集映射进内存），
 # 此时既删不掉也覆盖不了，只能编好之后再尝试替换
-$tmpDll = Join-Path $PSScriptRoot "brightness-wheel.build-$PID.dll"
+$tmpDll = Join-Path $PSScriptRoot "luxwheel.build-$PID.dll"
 Remove-Item $tmpDll -ErrorAction SilentlyContinue
 
 $sw = [System.Diagnostics.Stopwatch]::StartNew()

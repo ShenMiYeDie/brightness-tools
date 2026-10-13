@@ -1,8 +1,8 @@
 # 运行期自动生成的文件（含本机绝对路径或指纹，不入库）
-launch-hidden.vbs
-brightness-wheel.generated.dll
-brightness-wheel.generated.dll.stamp
-brightness-wheel.build-*.dll
+luxwheel-launch.vbs
+luxwheel.generated.dll
+luxwheel.generated.dll.stamp
+luxwheel.build-*.dll
 
 # 日志与临时产物
 *.log

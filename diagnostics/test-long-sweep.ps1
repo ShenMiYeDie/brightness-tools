@@ -53,7 +53,7 @@ public class LongSweep {
 
 Add-Type -TypeDefinition $code -Language CSharp
 
-$log = Join-Path $env:TEMP 'brightness-sweep.log'
+$log = Join-Path $env:TEMP 'luxwheel-sweep.log'
 function W([string]$m) {
     $line = "{0}  {1}" -f (Get-Date -Format 'HH:mm:ss.fff'), $m
     $line

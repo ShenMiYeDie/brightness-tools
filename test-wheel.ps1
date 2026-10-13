@@ -1,4 +1,5 @@
-# 端到端测试：注入 Ctrl+Alt+滚轮，读回亮度，并截图确认 OSD
+# luxwheel 端到端自检：注入 Ctrl+Alt+滚轮事件，读回显示器真实亮度，并可截图确认提示条
+# 用法：pwsh -File test-wheel.ps1 -Notches 3 -Direction down [-Shot osd.png]
 param(
     [int]$Notches = 3,
     [ValidateSet('down', 'up')][string]$Direction = 'down',

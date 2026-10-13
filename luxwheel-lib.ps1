@@ -1,10 +1,11 @@
 #Requires -Version 7.0
-# 公共工具函数（被 start / stop / install-autostart / build-dll 等脚本点源引入）
+# luxwheel 公共函数（被 start / stop / install-autostart / uninstall-autostart /
+# luxwheel-build 等脚本点源引入）：查找守护进程、生成无窗口启动器、组件指纹与编译引用
 
-$script:MainScript = Join-Path $PSScriptRoot 'brightness-wheel.ps1'
-$script:VbsPath    = Join-Path $PSScriptRoot 'launch-hidden.vbs'
+$script:MainScript = Join-Path $PSScriptRoot 'luxwheel.ps1'
+$script:VbsPath    = Join-Path $PSScriptRoot 'luxwheel-launch.vbs'
 $script:StartupDir = [Environment]::GetFolderPath('Startup')
-$script:StartupVbs = Join-Path $script:StartupDir 'brightness-wheel.vbs'
+$script:StartupVbs = Join-Path $script:StartupDir 'luxwheel.vbs'
 
 # 找到正在运行的守护进程（排除自身）
 function Get-BrightnessDaemon {
@@ -55,7 +56,7 @@ function New-LauncherVbs {
     $cmd = "`"$pwsh`" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$($script:MainScript)`" $DaemonArgs".TrimEnd()
     $escaped = $cmd -replace '"', '""'
     $lines = @(
-        "' auto-generated launcher for brightness-wheel (runs with no window)"
+        "' auto-generated launcher for luxwheel (runs with no window)"
         'Set sh = CreateObject("WScript.Shell")'
         "sh.Run ""$escaped"", 0, False"
     )
